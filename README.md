@@ -1,2 +1,2 @@
-# rust
-Yottastore implementation in Rust
+# Introduction
+Next generation datastore and multimodel database.
