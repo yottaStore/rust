@@ -2,7 +2,7 @@ use bincode::serialize;
 use xxhash_rust::xxh3::xxh3_128;
 
 use crate::coords::get_coords;
-
+use crate::utils::{merge_visited_nodes, MergedUpdates};
 const HASH_SIZE: usize = 16;
 
 pub enum UpdateType {
@@ -77,8 +77,11 @@ impl HTree {
     }
 
     pub fn update(&mut self, updates: &[Update]) {
-        let mut visited_nodes: Vec<usize> = Vec::new();
+        let mut merged: &mut MergedUpdates = &mut Vec::with_capacity(updates.len());
+
         for update in updates {
+            let mut visited_nodes: Vec<usize> = Vec::with_capacity(updates.len());
+
             match update.update_type {
                 UpdateType::Add => {
                     let nodes = add_node(self, update);
@@ -88,11 +91,15 @@ impl HTree {
                     println!("Delete not implemented");
                 }
             }
-        }
-        let nodes = &mut self.nodes;
 
-        for node in visited_nodes {
-            self.update_node(node);
+            merged = merge_visited_nodes(visited_nodes, merged);
+        }
+        //let nodes = &mut self.nodes;
+
+        for level in merged.iter().rev() {
+            for node in level {
+                self.update_node(*node);
+            }
         }
     }
 
@@ -124,6 +131,10 @@ impl HTree {
         }
         let node = &mut self.nodes[pointer];
         node.hash = xxh3_128(&serialized.clone());
+    }
+
+    pub fn verify(self) {
+        // TODO: implement verify
     }
 
     pub fn print(&self) {
