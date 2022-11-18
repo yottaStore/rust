@@ -8,5 +8,5 @@ edition = "2021"
 [dependencies]
 htree = { path = "../../libs/htree" }
 hasher = { path = "../../utils/hasher" }
-io-uring = "*"
+io-uring = { version = "*", features = ["unstable"] }
 libc = "*"
