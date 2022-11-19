@@ -8,6 +8,11 @@ use std::ffi::CString;
 use std::os::unix::io::AsRawFd;
 use std::{fs, io};
 
+// Questions:
+// 1. How do I setup large queues? and in general pass flags to the ring?
+// 2. Is buff done correctly?
+// 3. Does it looks right?
+
 pub type __u8 = ::std::os::raw::c_uchar;
 pub type __u16 = ::std::os::raw::c_ushort;
 pub type __u32 = ::std::os::raw::c_uint;
